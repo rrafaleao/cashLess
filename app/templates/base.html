@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Organizer</title>
+    <link rel="icon" href="/static/images/logo.jpg"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@6.9.96/css/materialdesignicons.min.css" />
+  </head>
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&display=swap');
+@import url('https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: all 0.35s linear;
+  font-family: 'barlow', sans-serif;
+}
+
+
+
+body {
+  background-color: #ededed;
+  display: flex; 
+}
+
+main {
+  margin-left: 16rem;
+  padding: 2rem;
+  width: calc(100% - 16rem);
+  transition: margin-left 0.25s linear,
+    width 0.25s linear;
+  display: flex;
+  justify-content:flex-start;
+  align-items: flex-start;
+  min-height: 100vh;
+}
+
+/* Ajuste para quando sidebar está mini */
+.mini + main {
+  margin-left: 4rem;
+  width: calc(100% - 4rem);
+}
+
+aside {
+  background-color: #029D60;
+  color: white;
+  width: 16rem;
+  height: 100vh;
+  display: grid;
+  grid-template-rows: 6rem 1fr 8rem;
+  padding: 0.5rem;
+  transition: width 0.25s linear,
+  padding 0.25s linear;
+  position: fixed;
+}
+
+button {
+  background-color: transparent;
+  border: none;
+  height: 4rem;
+  width: 4rem;
+  font-size: 1.25rem;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+ul {
+  list-style: none;
+}
+
+ul li {
+  display: grid;
+  grid-template-columns: 4rem 1fr;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  margin-block: 0.25rem;
+  transition: width 0.2s linear;
+  overflow: hidden;
+}
+
+ul li.active,
+ul li:hover {
+  background-color: #ffffff;
+  color: #000;
+}
+
+ul li i {
+  width: 4rem;
+  height: 3.5rem;
+  font-size: 1.25rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+ul li label {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 0.5rem;
+  cursor: inherit;
+}
+
+ul li img {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ffffff;
+}
+
+
+
+.mini {
+  padding: 0;
+}
+
+.mini ul li {
+  width: 4rem;
+}
+
+
+
+  </style>
+
+  <body>
+    <aside>
+      <button id="Toggle">
+        <i class="fi-rr-menu-burger"></i>
+      </button>
+      <div class="link">
+        <ul>
+          <li class="active">
+            <i class="fi-rr-home"></i>
+            <label>Início</label>
+          </li>
+          <li>
+            <i class="fi-rr-plus"></i>
+            <label>Registrar Transação</label>
+          </li>
+          <li>
+            <i class="fi-rr-flag"></i>
+            <label>Objetivos</label>
+          </li>
+          <li>
+            <i class="fi-rr-stats"></i>
+            <label>Controle Financeiro</label>
+          </li>
+          
+          <li>
+            <i class="fi-rr-calculator"></i>
+            <label>Calculadoras</label>
+          </li>
+
+        </ul>
+      </div>
+      <div class="user">
+        <ul>
+          <li>
+            <i>
+              <img src="https://static.vecteezy.com/system/resources/previews/002/318/271/non_2x/user-profile-icon-free-vector.jpg" alt="" />
+            </i>
+            <label>Usuário</label>
+          </li>
+          <li>
+            <i class="fi-rr-settings"></i>
+            <label>Configurações</label>
+          </li>
+        </ul>
+      </div>
+    </aside>
+    <main>
+      {% block content %}
+      <!-- O conteúdo específico de cada página será inserido aqui -->
+      {% endblock %}
+    </main>
+    <script>
+      let sideBar = document.querySelector("aside");
+      let toggle = document.querySelector("#Toggle");
+
+      toggle.addEventListener("click", function (e) {
+        if (sideBar.classList.contains("mini")) {
+          sideBar.classList.remove("mini");
+          sideBar.style.width = "16rem";
+        } else {
+          sideBar.classList.add("mini");
+          sideBar.style.width = "4rem";
+        }
+      });
+    </script>
+  </body>
+</html>
