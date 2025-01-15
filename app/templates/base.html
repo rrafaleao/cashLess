@@ -19,11 +19,10 @@
   font-family: 'barlow', sans-serif;
 }
 
-
-
 body {
   background-color: #ededed;
   display: flex; 
+  overflow-x: hidden;
 }
 
 main {
@@ -38,7 +37,6 @@ main {
   min-height: 100vh;
 }
 
-/* Ajuste para quando sidebar está mini */
 .mini + main {
   margin-left: 4rem;
   width: calc(100% - 4rem);
@@ -116,8 +114,6 @@ ul li img {
   border: 3px solid #ffffff;
 }
 
-
-
 .mini {
   padding: 0;
 }
@@ -126,50 +122,82 @@ ul li img {
   width: 4rem;
 }
 
+/* Animation for active state */
+.active-animation {
+  position: relative;
+  overflow: hidden;
+}
 
+.active-animation::after {
+  content: '';
+  position: absolute;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: #029D60;
+  bottom: 0;
+  animation: slideIn 0.3s forwards;
+}
 
-  </style>
+@keyframes slideIn {
+  to {
+    left: 0;
+  }
+}
+</style>
 
-  <body>
+<body>
     <aside>
       <button id="Toggle">
         <i class="fi-rr-menu-burger"></i>
       </button>
       <div class="link">
         <ul>
-          <li class="active">
-            <i class="fi-rr-home"></i>
-            <label>Início</label>
-          </li>
-          <li>
-            <i class="fi-rr-plus"></i>
-            <label>Registrar Transação</label>
-          </li>
-          <li>
-            <i class="fi-rr-flag"></i>
-            <label>Objetivos</label>
-          </li>
-          <li>
-            <i class="fi-rr-stats"></i>
-            <label>Controle Financeiro</label>
-          </li>
-          
-          <li>
-            <i class="fi-rr-calculator"></i>
-            <label>Calculadoras</label>
-          </li>
-
+            <li data-page="/">
+                <i class="fi-rr-home"></i>
+                <label>Início</label>
+            </li>
+            
+            {% if session.user_id %}
+            <!-- Mostrar opções completas quando logado -->
+            <li data-page="/transactions">
+                <i class="fi-rr-plus"></i>
+                <label>Registrar Transação</label>
+            </li>
+            <li data-page="/extract">
+              <i class="fi-rr-document"></i>
+                <label>Extrato</label>
+            </li>
+            <li data-page="/goals">
+                <i class="fi-rr-flag"></i>
+                <label>Objetivos</label>
+            </li>
+            <li data-page="/financial-control">
+                <i class="fi-rr-stats"></i>
+                <label>Controle Financeiro</label>
+            </li>
+            {% else %}
+            <!-- Mostrar apenas Início, Fazer Login e Criar Conta quando deslogado -->
+            <li data-page="/login">
+                <i class="fi-rr-angle-right"></i>
+                <label>Fazer Login</label>
+            </li>
+            <li data-page="/register">
+                <i class="fi-rr-user-add"></i>
+                <label>Criar Conta</label>
+            </li>
+            {% endif %}
         </ul>
-      </div>
+    </div>
       <div class="user">
         <ul>
-          <li>
+          <li data-page="/profile">
             <i>
               <img src="https://static.vecteezy.com/system/resources/previews/002/318/271/non_2x/user-profile-icon-free-vector.jpg" alt="" />
             </i>
-            <label>Usuário</label>
+            <label> Usuario </label>
           </li>
-          <li>
+          <li data-page="/settings">
             <i class="fi-rr-settings"></i>
             <label>Configurações</label>
           </li>
@@ -184,7 +212,9 @@ ul li img {
     <script>
       let sideBar = document.querySelector("aside");
       let toggle = document.querySelector("#Toggle");
+      let menuItems = document.querySelectorAll("aside ul li");
 
+      // Toggle sidebar
       toggle.addEventListener("click", function (e) {
         if (sideBar.classList.contains("mini")) {
           sideBar.classList.remove("mini");
@@ -194,6 +224,57 @@ ul li img {
           sideBar.style.width = "4rem";
         }
       });
+
+      // Handle menu item clicks
+      menuItems.forEach(item => {
+        item.addEventListener("click", function() {
+          // Remove active class from all items
+          menuItems.forEach(i => {
+            i.classList.remove("active");
+            i.classList.remove("active-animation");
+          });
+          
+          // Add active class and animation to clicked item
+          this.classList.add("active");
+          this.classList.add("active-animation");
+          
+          // Get the page URL from data-page attribute and navigate
+          const pageUrl = this.getAttribute("data-page");
+          if (pageUrl) {
+            window.location.href = pageUrl;
+          }
+        });
+      });
+
+      // Set active menu item based on current URL
+      document.addEventListener("DOMContentLoaded", function() {
+        const currentPath = window.location.pathname;
+        
+        // Remove a classe 'active' de todos os itens primeiro
+        menuItems.forEach(item => {
+          item.classList.remove('active');
+          item.classList.remove('active-animation');
+        });
+
+        // Encontra e ativa apenas o item correspondente à URL atual
+        const activeItem = Array.from(menuItems).find(item => {
+          const itemPath = item.getAttribute("data-page");
+          return itemPath === currentPath;
+        });
+
+        if (activeItem) {
+          activeItem.classList.add('active');
+          activeItem.classList.add('active-animation');
+        }
+        // Se estiver na página inicial, ativa o item 'Início'
+        else if (currentPath === "/" || currentPath === "") {
+          const homeItem = document.querySelector('[data-page="/home"]');
+          if (homeItem) {
+            homeItem.classList.add('active');
+            homeItem.classList.add('active-animation');
+          }
+        }
+      });
     </script>
-  </body>
+</body>
 </html>

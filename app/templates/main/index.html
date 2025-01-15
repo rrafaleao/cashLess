@@ -123,7 +123,7 @@
             border-radius: 20px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            margin-top: 20px;
+            margin-top: 0px;
         }
 
         .transactions-header {
@@ -183,21 +183,119 @@
             color: #666;
             text-align: right;
         }
-        .goals-card {
-            width: 450px;
-            height: 230px;
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            display: flex;
-            background-color: white;
-            flex-direction: column;
-        }
-        .goals-title {
-            color: #333;
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
+.goals-container {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 100px auto;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.header-container h1 {
+    font-size: 1.75rem;
+    color: #333;
+}
+
+.goal-card {
+    background: white;
+    width: 450px;
+    height: 270px;
+    padding: 20px;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+}
+
+.goal-title {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.goal-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-right: 4rem;
+}
+
+.goal-header h3 {
+    color: #333;
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.goal-header i {
+    color: #029D60;
+    font-size: 1.125rem;
+    flex-shrink: 0;
+}
+
+.goal-progress {
+    margin: 1.25rem 0;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.progress-percentage {
+    background: #e6f4ef;
+    color: #029D60;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.progress-values {
+    font-size: 0.75rem;
+    color: #666;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 0.5rem;
+    background: #e6f4ef;
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #029D60;
+    transition: width 0.5s ease;
+}
+
+.goal-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.25rem;
+}
+
+.goal-date {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #666;
+    font-size: 0.75rem;
+}
 
             
 
@@ -245,54 +343,83 @@
 
         <div class="cards-wrapper">
             <!-- Transactions Card -->
-            <div class="transactions-card">
-                <div class="transactions-header">
-                    <h2 class="transactions-title">Últimas Transações</h2>
-                    <button class="view-more-btn">
-                        Ver mais
-                        <i class="fi fi-rr-arrow-right"></i>
-                    </button>
+<div class="transactions-card">
+    <div class="transactions-header">
+        <h2 class="transactions-title">Últimas Transações</h2>
+        <a href="{{ url_for('main.transactions') }}" class="view-more-btn">
+            Ver mais
+            <i class="fi fi-rr-arrow-right"></i>
+        </a>
+    </div>
+    <div class="transaction-list">
+        {% if transacoes %}
+            {% for transacao in transacoes %}
+            <div class="transaction-item">
+                <div class="transaction-icon">
+                    {% if transacao.tipo_transacao == 'ganho' %}
+                        <i class="fi fi-rr-arrow-small-up"></i>
+                    {% else %}
+                        <i class="fi fi-rr-arrow-small-down"></i>
+                    {% endif %}
                 </div>
-                <div class="transaction-list">
-                    <div class="transaction-item">
-                        <div class="transaction-icon">
-                            <i class="fi fi-rr-shopping-cart"></i>
-                        </div>
-                        <div class="transaction-name">Mercado</div>
-                        <div class="transaction-category">Alimentação</div>
-                        <div class="transaction-payment">Cartão de Crédito</div>
-                    </div>
-                    <div class="transaction-item">
-                        <div class="transaction-icon">
-                            <i class="fi fi-rr-play-alt"></i>
-                        </div>
-                        <div class="transaction-name">Netflix</div>
-                        <div class="transaction-category">Entretenimento</div>
-                        <div class="transaction-payment">Débito Automático</div>
-                    </div>
-                    <div class="transaction-item">
-                        <div class="transaction-icon">
-                            <i class="fi fi-rr-gas-pump"></i>
-                        </div>
-                        <div class="transaction-name">Posto Gasolina</div>
-                        <div class="transaction-category">Transporte</div>
-                        <div class="transaction-payment">Cartão de Débito</div>
-                    </div>
-                </div>
+                <div class="transaction-name">{{ transacao.descricao }}</div>
+                <div class="transaction-category">{{ transacao.categoria }}</div>
+                <div class="transaction-payment">{{ transacao.forma_pagamento }}</div>
             </div>
-        
-            <!-- Goals Card -->
-            <div class="goals-card">
-                <h2 class="goals-title">Objetivos</h2>
-                <div class="goals-graphs-container">
-                    <div class="goals-graph-item">
-                        <div class="goals-graph-bar income-bar"></div>
-                        <span class="goals-graph-label">Viagem</span>
-                    </div>
-                </div>
+            {% endfor %}
+        {% else %}
+            <div style="text-align: center; padding: 20px; color: #666;">
+                <i class="fi fi-rr-info" style="font-size: 24px; margin-bottom: 10px;"></i>
+                <p>Nenhuma transação encontrada</p>
             </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Goals Card -->
+<div class="goals-grid">
+    <div class="goal-card">
+        <div class="goal-title">
+            <h2>Objetivos</h2>
+            <a href="{{ url_for('main.goals') }}" class="view-more-btn">
+                Ver mais
+                <i class="fi fi-rr-arrow-right"></i>
+            </a>
         </div>
-        
+        {% if objetivos %}
+            {% for objetivo in objetivos %}
+                <div class="goal-header">
+                    <i class="fi-rr-flag"></i>
+                    <h3>{{ objetivo.nome }}</h3>
+                </div>
+                <div class="goal-progress">
+                    <div class="progress-info">
+                        <span class="progress-percentage">
+                            {{ ((objetivo.valor_recebido / objetivo.valor_total) * 100)|round(1) }}%
+                        </span>
+                        <span class="progress-values">
+                            R$ {{ "%.2f"|format(objetivo.valor_recebido) }} / R$ {{ "%.2f"|format(objetivo.valor_total) }}
+                        </span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ (objetivo.valor_recebido / objetivo.valor_total) * 100 }}%"></div>
+                    </div>
+                </div>
+                <div class="goal-footer">
+                    <span class="goal-date">
+                        <i class="fi-rr-calendar"></i>
+                        {{ objetivo.data_limite.strftime('%d/%m/%Y') }}
+                    </span>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div style="text-align: center; padding: 20px; color: #666;">
+                <i class="fi fi-rr-info" style="font-size: 24px; margin-bottom: 10px;"></i>
+                <p>Nenhum objetivo cadastrado</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
 
     <script>
         const toggleBalance = document.getElementById('toggleBalance');

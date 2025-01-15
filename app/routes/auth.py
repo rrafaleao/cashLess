@@ -46,3 +46,9 @@ def login():
             return redirect(url_for('auth.login'))
      
     return render_template('/auth/login.html')
+
+@auth.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    flash('Você saiu da sua conta.', 'success')
+    return redirect(url_for('auth.login'))
