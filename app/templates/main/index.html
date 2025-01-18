@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 
 {% block title %}Página Inicial{% endblock %}
+
 {% block content %}
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
     <style>
+        <style>
         .dashboard-container {
             position: relative;
             min-height: 100vh;
@@ -35,42 +37,47 @@
             background-color: #ffffff;
         }
 
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
         .result-title {
             color: #333;
             font-size: 24px;
-            margin-bottom: 20px;
+            margin: 0;
         }
 
-        .graphs-container {
+        .toggle-buttons {
             display: flex;
-            gap: 20px;
-            margin-top: auto;
-            padding: 20px;
+            gap: 8px;
         }
 
-        .graph-item {
-            flex: 1;
-            text-align: center;
-        }
-
-        .graph-bar {
-            width: 40px;
-            height: 100px;
-            margin: 0 auto 10px;
-            border-radius: 5px;
-        }
-
-        .income-bar {
-            background-color: #007bff;
-        }
-
-        .expense-bar {
-            background-color: #dc3545;
-        }
-
-        .graph-label {
-            color: #666;
+        .toggle-btn {
+            padding: 8px 16px;
+            border: 1px solid #029D60;
+            background: none;
+            border-radius: 20px;
+            cursor: pointer;
             font-size: 14px;
+            color: #029D60;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn.active {
+            background: #029D60;
+            color: white;
+        }
+
+        .chart-wrapper {
+            flex-grow: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 150px;
         }
 
         .balance-header {
@@ -183,253 +190,350 @@
             color: #666;
             text-align: right;
         }
-.goals-container {
-    padding: 2rem;
-    max-width: 1400px;
-    margin: 100px auto;
-}
 
-.header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-}
+        .goals-container {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 100px auto;
+        }
 
-.header-container h1 {
-    font-size: 1.75rem;
-    color: #333;
-}
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
 
-.goal-card {
-    background: white;
-    width: 450px;
-    height: 270px;
-    padding: 20px;
-    border-radius: 0.75rem;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
-}
+        .header-container h1 {
+            font-size: 1.75rem;
+            color: #333;
+        }
 
-.goal-title {
-    margin-bottom: 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+        .goal-card {
+            background: white;
+            width: 450px;
+            height: 270px;
+            padding: 20px;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
 
-.goal-header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-    padding-right: 4rem;
-}
+        .goal-title {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.goal-header h3 {
-    color: #333;
-    font-size: 1rem;
-    font-weight: 600;
-    margin: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
+        .goal-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding-right: 4rem;
+        }
 
-.goal-header i {
-    color: #029D60;
-    font-size: 1.125rem;
-    flex-shrink: 0;
-}
+        .goal-header h3 {
+            color: #333;
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
 
-.goal-progress {
-    margin: 1.25rem 0;
-}
+        .goal-header i {
+            color: #029D60;
+            font-size: 1.125rem;
+            flex-shrink: 0;
+        }
 
-.progress-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.75rem;
-}
+        .goal-progress {
+            margin: 1.25rem 0;
+        }
 
-.progress-percentage {
-    background: #e6f4ef;
-    color: #029D60;
-    padding: 0.25rem 0.75rem;
-    border-radius: 1rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-}
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
 
-.progress-values {
-    font-size: 0.75rem;
-    color: #666;
-}
+        .progress-percentage {
+            background: #e6f4ef;
+            color: #029D60;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
 
-.progress-bar {
-    width: 100%;
-    height: 0.5rem;
-    background: #e6f4ef;
-    border-radius: 1rem;
-    overflow: hidden;
-}
+        .progress-values {
+            font-size: 0.75rem;
+            color: #666;
+        }
 
-.progress-fill {
-    height: 100%;
-    background: #029D60;
-    transition: width 0.5s ease;
-}
+        .progress-bar {
+            width: 100%;
+            height: 0.5rem;
+            background: #e6f4ef;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
 
-.goal-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 1.25rem;
-}
+        .progress-fill {
+            height: 100%;
+            background: #029D60;
+            transition: width 0.5s ease;
+        }
 
-.goal-date {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #666;
-    font-size: 0.75rem;
-}
+        .goal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.25rem;
+        }
 
-            
+        .goal-date {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #666;
+            font-size: 0.75rem;
+        }
 
     </style>
 
     <div class="dashboard-container">
         <div class="cards-wrapper">
-            <!-- Existing Card -->
+            <!-- Card de Saldo Atual -->
             <div class="financial-card">
                 <div>
                     <div class="balance-header">
                         <h2>Saldo atual</h2>
                         <i class="fi fi-rr-eye eye-icon" id="toggleBalance"></i>
                     </div>
-                    <p class="balance-amount" id="balanceValue">R$ 1.000,00</p>
+                    <p class="balance-amount" id="balanceValue">R$ <span id="saldoValue">{{ saldo|default("0,00") }}</span></p>
                 </div>
 
                 <div class="small-cards-container">
                     <div class="small-card expenses">
                         <h3>Gastos</h3>
-                        <p>R$ 500,00</p>
+                        <p>R$ <span id="gastosValue">{{ total_gastos|default("0,00") }}</span></p>
                     </div>
                     <div class="small-card income">
                         <h3>Ganhos</h3>
-                        <p>R$ 1.500,00</p>
+                        <p>R$ <span id="ganhosValue">{{ total_ganhos|default("0,00") }}</span></p>
                     </div>
                 </div>
             </div>
 
-            <!-- Result Card -->
+            <!-- Card de Resultado -->
             <div class="result-card">
-                <h2 class="result-title">Resultado</h2>
-                <div class="graphs-container">
-                    <div class="graph-item">
-                        <div class="graph-bar income-bar"></div>
-                        <span class="graph-label">Ganhos</span>
+                <div class="result-header">
+                    <h2 class="result-title">Resultado</h2>
+                    <div class="toggle-buttons">
+                        <button class="toggle-btn active" data-chart="expenses">Despesas</button>
+                        <button class="toggle-btn" data-chart="income">Receitas</button>
                     </div>
-                    <div class="graph-item">
-                        <div class="graph-bar expense-bar"></div>
-                        <span class="graph-label">Gastos</span>
-                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="miniChart"></canvas>
                 </div>
             </div>
         </div>
+
 
         <div class="cards-wrapper">
-            <!-- Transactions Card -->
-<div class="transactions-card">
-    <div class="transactions-header">
-        <h2 class="transactions-title">Últimas Transações</h2>
-        <a href="{{ url_for('main.transactions') }}" class="view-more-btn">
-            Ver mais
-            <i class="fi fi-rr-arrow-right"></i>
-        </a>
-    </div>
-    <div class="transaction-list">
-        {% if transacoes %}
-            {% for transacao in transacoes %}
-            <div class="transaction-item">
-                <div class="transaction-icon">
-                    {% if transacao.tipo_transacao == 'ganho' %}
-                        <i class="fi fi-rr-arrow-small-up"></i>
+            <!-- Card de Transações -->
+            <div class="transactions-card">
+                <div class="transactions-header">
+                    <h2 class="transactions-title">Últimas Transações</h2>
+                    <a href="{{ url_for('main.extract') }}" class="view-more-btn">
+                        Ver mais
+                        <i class="fi fi-rr-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="transaction-list">
+                    {% if transacoes %}
+                        {% for transacao in transacoes %}
+                        <div class="transaction-item">
+                            <div class="transaction-icon">
+                                {% if transacao.tipo_transacao == 'ganho' %}
+                                    <i class="fi fi-rr-arrow-small-up"></i>
+                                {% else %}
+                                    <i class="fi fi-rr-arrow-small-down"></i>
+                                {% endif %}
+                            </div>
+                            <div class="transaction-name">{{ transacao.descricao }}</div>
+                            <div class="transaction-category">{{ transacao.categoria }}</div>
+                            <div class="transaction-payment">{{ transacao.forma_pagamento }}</div>
+                        </div>
+                        {% endfor %}
                     {% else %}
-                        <i class="fi fi-rr-arrow-small-down"></i>
+                        <div style="text-align: center; padding: 20px; color: #666;">
+                            <i class="fi fi-rr-info" style="font-size: 24px; margin-bottom: 10px;"></i>
+                            <p>Nenhuma transação encontrada</p>
+                        </div>
                     {% endif %}
                 </div>
-                <div class="transaction-name">{{ transacao.descricao }}</div>
-                <div class="transaction-category">{{ transacao.categoria }}</div>
-                <div class="transaction-payment">{{ transacao.forma_pagamento }}</div>
             </div>
-            {% endfor %}
-        {% else %}
-            <div style="text-align: center; padding: 20px; color: #666;">
-                <i class="fi fi-rr-info" style="font-size: 24px; margin-bottom: 10px;"></i>
-                <p>Nenhuma transação encontrada</p>
-            </div>
-        {% endif %}
-    </div>
-</div>
 
-<!-- Goals Card -->
-<div class="goals-grid">
-    <div class="goal-card">
-        <div class="goal-title">
-            <h2>Objetivos</h2>
-            <a href="{{ url_for('main.goals') }}" class="view-more-btn">
-                Ver mais
-                <i class="fi fi-rr-arrow-right"></i>
-            </a>
-        </div>
-        {% if objetivos %}
-            {% for objetivo in objetivos %}
-                <div class="goal-header">
-                    <i class="fi-rr-flag"></i>
-                    <h3>{{ objetivo.nome }}</h3>
-                </div>
-                <div class="goal-progress">
-                    <div class="progress-info">
-                        <span class="progress-percentage">
-                            {{ ((objetivo.valor_recebido / objetivo.valor_total) * 100)|round(1) }}%
-                        </span>
-                        <span class="progress-values">
-                            R$ {{ "%.2f"|format(objetivo.valor_recebido) }} / R$ {{ "%.2f"|format(objetivo.valor_total) }}
-                        </span>
+            <!-- Card de Objetivos -->
+            <div class="goals-grid">
+                <div class="goal-card">
+                    <div class="goal-title">
+                        <h2>Objetivos</h2>
+                        <a href="{{ url_for('main.goals') }}" class="view-more-btn">
+                            Ver mais
+                            <i class="fi fi-rr-arrow-right"></i>
+                        </a>
                     </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: {{ (objetivo.valor_recebido / objetivo.valor_total) * 100 }}%"></div>
-                    </div>
+                    {% if objetivos %}
+                        {% for objetivo in objetivos %}
+                            <div class="goal-header">
+                                <i class="fi-rr-flag"></i>
+                                <h3>{{ objetivo.nome }}</h3>
+                            </div>
+                            <div class="goal-progress">
+                                <div class="progress-info">
+                                    <span class="progress-percentage">
+                                        {{ ((objetivo.valor_recebido / objetivo.valor_total) * 100)|round(1) }}%
+                                    </span>
+                                    <span class="progress-values">
+                                        R$ {{ "%.2f"|format(objetivo.valor_recebido) }} / R$ {{ "%.2f"|format(objetivo.valor_total) }}
+                                    </span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: {{ (objetivo.valor_recebido / objetivo.valor_total) * 100 }}%"></div>
+                                </div>
+                            </div>
+                            <div class="goal-footer">
+                                <span class="goal-date">
+                                    <i class="fi-rr-calendar"></i>
+                                    {{ objetivo.data_limite.strftime('%d/%m/%Y') }}
+                                </span>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div style="text-align: center; padding: 20px; color: #666;">
+                            <i class="fi fi-rr-info" style="font-size: 24px; margin-bottom: 10px;"></i>
+                            <p>Nenhum objetivo encontrado</p>
+                        </div>
+                    {% endif %}
                 </div>
-                <div class="goal-footer">
-                    <span class="goal-date">
-                        <i class="fi-rr-calendar"></i>
-                        {{ objetivo.data_limite.strftime('%d/%m/%Y') }}
-                    </span>
-                </div>
-            {% endfor %}
-        {% else %}
-            <div style="text-align: center; padding: 20px; color: #666;">
-                <i class="fi fi-rr-info" style="font-size: 24px; margin-bottom: 10px;"></i>
-                <p>Nenhum objetivo cadastrado</p>
             </div>
-        {% endif %}
+        </div>
     </div>
-</div>
 
     <script>
-        const toggleBalance = document.getElementById('toggleBalance');
-        const balanceValue = document.getElementById('balanceValue');
-        let isVisible = true;
+        document.getElementById('toggleBalance').addEventListener('click', function () {
+            const balanceValue = document.getElementById('balanceValue');
+            const gastosValue = document.getElementById('gastosValue');
+            const ganhosValue = document.getElementById('ganhosValue');
+            const isHidden = balanceValue.style.visibility === 'hidden';
 
-        toggleBalance.addEventListener('click', () => {
-            isVisible = !isVisible;
-            balanceValue.textContent = isVisible ? 'R$ 1.000,00' : '••••••';
-            toggleBalance.className = isVisible ? 'fi fi-rr-eye eye-icon' : 'fi fi-rr-eye-crossed eye-icon';
+            balanceValue.style.visibility = isHidden ? 'visible' : 'hidden';
+            gastosValue.style.visibility = isHidden ? 'visible' : 'hidden';
+            ganhosValue.style.visibility = isHidden ? 'visible' : 'hidden';
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+    let currentChart = null;
+    const ctx = document.getElementById('miniChart').getContext('2d');
+    
+    // Configurações comuns do gráfico
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'right',
+                labels: {
+                    font: {
+                        size: 11
+                    },
+                    padding: 10
+                }
+            }
+        },
+        cutout: '60%'
+    };
+
+    // Dados das despesas
+    const expenseData = {
+        labels: ['Alimentação', 'Transporte', 'Moradia', 'Saúde', 'Outros'],
+        datasets: [{
+            data: [
+                gastosPorCategoria['Alimentação'] || 0,
+                gastosPorCategoria['Transporte'] || 0,
+                gastosPorCategoria['Moradia'] || 0,
+                gastosPorCategoria['Saúde'] || 0,
+                Object.values(gastosPorCategoria).reduce((a, b) => a + b, 0) -
+                (gastosPorCategoria['Alimentação'] || 0) -
+                (gastosPorCategoria['Transporte'] || 0) -
+                (gastosPorCategoria['Moradia'] || 0) -
+                (gastosPorCategoria['Saúde'] || 0)
+            ],
+            backgroundColor: [
+                '#FF6B6B',
+                '#4ECDC4',
+                '#45B7D1',
+                '#96CEB4',
+                '#FFEEAD'
+            ]
+        }]
+    };
+
+    // Dados das receitas
+    const incomeData = {
+        labels: ['Salário', 'Freelance', 'Investimentos', 'Outros'],
+        datasets: [{
+            data: [
+                ganhosPorCategoria['Salário'] || 0,
+                ganhosPorCategoria['Freelance'] || 0,
+                ganhosPorCategoria['Investimentos'] || 0,
+                Object.values(ganhosPorCategoria).reduce((a, b) => a + b, 0) -
+                (ganhosPorCategoria['Salário'] || 0) -
+                (ganhosPorCategoria['Freelance'] || 0) -
+                (ganhosPorCategoria['Investimentos'] || 0)
+            ],
+            backgroundColor: [
+                '#4CAF50',
+                '#2196F3',
+                '#3F51B5',
+                '#607D8B'
+            ]
+        }]
+    };
+
+    // Função para atualizar o gráfico
+    function updateChart(type) {
+        if (currentChart) {
+            currentChart.destroy();
+        }
+
+        currentChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: type === 'expenses' ? expenseData : incomeData,
+            options: chartOptions
+        });
+    }
+
+    // Configurar eventos dos botões
+    document.querySelectorAll('.toggle-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            updateChart(this.dataset.chart);
+        });
+    });
+
+    // Inicializar com o gráfico de despesas
+    updateChart('expenses');
+});
     </script>
 {% endblock %}

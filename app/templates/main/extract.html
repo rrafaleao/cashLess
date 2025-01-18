@@ -1,267 +1,284 @@
-{% extends "base.html" %}
+    {% extends "base.html" %}
 
-{% block title %}Extrato{% endblock %}
-{% block content %}
-    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
-    <style>
-        .extrato-container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+    {% block title %}Extrato{% endblock %}
+    {% block content %}
+        <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+        <style>
+            .extrato-container {
+                width: 100%;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+            }
 
-        .extrato-header {
-            background-color: #ffffff;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
+            .extrato-header {
+                background-color: #ffffff;
+                border-radius: 20px;
+                padding: 20px;
+                margin-bottom: 20px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            }
 
-        .filtros {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
+            .filtros {
+                display: flex;
+                gap: 15px;
+                margin-bottom: 20px;
+            }
 
-        .filtro-item {
-            padding: 8px 16px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
+            .filtro-item {
+                padding: 8px 16px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
 
-        .filtro-item:hover, .filtro-item.active {
-            background-color: #029D60;
-            color: white;
-            border-color: #029D60;
-        }
+            .filtro-item:hover, .filtro-item.active {
+                background-color: #029D60;
+                color: white;
+                border-color: #029D60;
+            }
 
-        .transacoes-lista {
-            background-color: #ffffff;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
+            .transacoes-lista {
+                background-color: #ffffff;
+                border-radius: 20px;
+                padding: 20px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            }
 
-        .transacao-grupo {
-            margin-bottom: 30px;
-        }
+            .transacao-grupo {
+                margin-bottom: 30px;
+            }
 
-        .data-grupo {
-            font-size: 18px;
-            color: #333;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #f0f0f0;
-        }
+            .data-grupo {
+                font-size: 18px;
+                color: #333;
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #f0f0f0;
+            }
 
-        .transacao-item {
-            display: grid;
-            grid-template-columns: auto 1fr auto auto auto;
-            align-items: center;
-            gap: 20px;
-            padding: 15px;
-            border-radius: 10px;
-            transition: background-color 0.3s;
-            margin-bottom: 10px;
-        }
+            .transacao-item {
+                display: grid;
+                grid-template-columns: auto 1fr auto auto auto;
+                align-items: center;
+                gap: 20px;
+                padding: 15px;
+                border-radius: 10px;
+                transition: background-color 0.3s;
+                margin-bottom: 10px;
+            }
 
-        .transacao-item:hover {
-            background-color: #f8f9fa;
-        }
+            .transacao-item:hover {
+                background-color: #f8f9fa;
+            }
 
-        .transacao-icon {
-            width: 40px;
-            height: 40px;
-            background-color: #f0f0f0;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #029D60;
-        }
+            .transacao-icon {
+                width: 40px;
+                height: 40px;
+                background-color: #f0f0f0;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #029D60;
+            }
 
-        .transacao-info {
-            display: flex;
-            flex-direction: column;
-        }
+            .transacao-info {
+                display: flex;
+                flex-direction: column;
+            }
 
-        .transacao-descricao {
-            font-weight: 500;
-            color: #333;
-            margin-bottom: 4px;
-        }
+            .transacao-descricao {
+                font-weight: 500;
+                color: #333;
+                margin-bottom: 4px;
+            }
 
-        .transacao-categoria {
-            color: #666;
-            font-size: 14px;
-        }
+            .transacao-categoria {
+                color: #666;
+                font-size: 14px;
+            }
 
-        .transacao-pagamento {
-            color: #666;
-            font-size: 14px;
-        }
+            .transacao-pagamento {
+                color: #666;
+                font-size: 14px;
+            }
 
-        .transacao-valor {
-            font-weight: 600;
-            font-size: 16px;
-        }
+            .transacao-valor {
+                font-weight: 600;
+                font-size: 16px;
+            }
 
-        .valor-entrada {
-            color: #029D60;
-        }
+            .valor-entrada {
+                color: #029D60;
+            }
 
-        .valor-saida {
-            color: #dc3545;
-        }
+            .valor-saida {
+                color: #dc3545;
+            }
 
-        .sem-transacoes {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-        }
+            .sem-transacoes {
+                text-align: center;
+                padding: 40px;
+                color: #666;
+            }
 
-        .resumo-card {
-            background-color: #029D60;
-            color: white;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
+            .resumo-card {
+                background-color: #029D60;
+                color: white;
+                border-radius: 20px;
+                padding: 20px;
+                margin-bottom: 20px;
+            }
 
-        .resumo-valores {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-top: 15px;
-        }
+            .resumo-valores {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+                margin-top: 15px;
+            }
 
-        .resumo-item {
-            text-align: center;
-        }
+            .resumo-item {
+                text-align: center;
+            }
 
-        .resumo-label {
-            font-size: 14px;
-            margin-bottom: 5px;
-            opacity: 0.9;
-        }
+            .resumo-label {
+                font-size: 14px;
+                margin-bottom: 5px;
+                opacity: 0.9;
+            }
 
-        .resumo-valor {
-            font-size: 20px;
-            font-weight: 600;
-        }
-    </style>
+            .resumo-valor {
+                font-size: 20px;
+                font-weight: 600;
+            }
+        </style>
 
-    <div class="extrato-container">
-        <!-- Resumo Card -->
-        <div class="resumo-card">
-            <h2>Resumo do Período</h2>
-            <div class="resumo-valores">
-                <div class="resumo-item">
-                    <div class="resumo-label">Entradas</div>
-                    <div class="resumo-valor">R$ {{ total_entradas }}</div>
-                </div>
-                <div class="resumo-item">
-                    <div class="resumo-label">Saídas</div>
-                    <div class="resumo-valor">R$ {{ total_saidas }}</div>
-                </div>
-                <div class="resumo-item">
-                    <div class="resumo-label">Saldo</div>
-                    <div class="resumo-valor">R$ {{ saldo }}</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Filtros -->
-        <div class="extrato-header">
-            <div class="filtros">
-                <div class="filtro-item active">Todos</div>
-                <div class="filtro-item">Entradas</div>
-                <div class="filtro-item">Saídas</div>
-            </div>
-        </div>
-
-        <!-- Lista de Transações -->
-        <div class="transacoes-lista">
-            {% if transacoes %}
-                {% for data, grupo in transacoes|groupby('data') %}
-                    <div class="transacao-grupo">
-                        <div class="data-grupo">{{ data }}</div>
-                        {% for transacao in grupo %}
-                            <div class="transacao-item">
-                                <div class="transacao-icon">
-                                    {% if transacao.categoria == 'Alimentação' %}
-                                        <i class="fi fi-rr-shopping-cart"></i>
-                                    {% elif transacao.categoria == 'Transporte' %}
-                                        <i class="fi fi-rr-gas-pump"></i>
-                                    {% elif transacao.categoria == 'Assinaturas' %}
-                                        <i class="fi fi-rr-play-alt"></i>
-                                    {% elif transacao.categoria == 'Moradia' %}
-                                        <i class="fi fi-rr-house-building"></i>
-                                    {% elif transacao.categoria == 'Saúde' %}
-                                        <i class="fi fi-rr-doctor"></i>
-                                    {% elif transacao.categoria == 'Educação' %}
-                                        <i class="fi-rr-book-open-cover"></i>
-                                    {% elif transacao.categoria == 'Lazer' %}
-                                        <i class="fi-rr-smile"></i>
-                                    {% elif transacao.categoria == 'Vestuário' %}
-                                        <i class="fi fi-rr-tie"></i>
-                                    {% elif transacao.categoria == 'Outros' %}
-                                        <i class="fi fi-rr-play-alt"></i>
-                                    {% else %}
-                                        <i class="fi fi-rr-document"></i>
-                                    {% endif %}
-                                </div>
-                                <div class="transacao-info">
-                                    <div class="transacao-descricao">{{ transacao.descricao }}</div>
-                                    <div class="transacao-categoria">{{ transacao.categoria }}</div>
-                                </div>
-                                <div class="transacao-pagamento">{{ transacao.forma_pagamento }}</div>
-                                <div class="transacao-valor {{ 'valor-entrada' if transacao.tipo_transacao == 'entrada' else 'valor-saida' }}">
-                                    R$ {{ "%.2f"|format(transacao.valor) }}
-                                </div>
-                            </div>
-                        {% endfor %}
+        <div class="extrato-container">
+            <!-- Resumo Card -->
+            <div class="resumo-card">
+                <h2>Resumo do Período</h2>
+                <div class="resumo-valores">
+                    <div class="resumo-item">
+                        <div class="resumo-label">Entradas</div>
+                        <div class="resumo-valor">R$ {{ total_entradas }}</div>
                     </div>
-                {% endfor %}
-            {% else %}
-                <div class="sem-transacoes">
-                    <i class="fi fi-rr-info"></i>
-                    <p>Nenhuma transação encontrada</p>
+                    <div class="resumo-item">
+                        <div class="resumo-label">Saídas</div>
+                        <div class="resumo-valor">R$ {{ total_saidas }}</div>
+                    </div>
+                    <div class="resumo-item">
+                        <div class="resumo-label">Saldo</div>
+                        <div class="resumo-valor">R$ {{ saldo }}</div>
+                    </div>
                 </div>
-            {% endif %}
+            </div>
+
+            <!-- Filtros -->
+            <div class="extrato-header">
+                <div class="filtros">
+                    <div class="filtro-item active">Todos</div>
+                    <div class="filtro-item">Entradas</div>
+                    <div class="filtro-item">Saídas</div>
+                </div>
+            </div>
+
+            <!-- Lista de Transações -->
+            <div class="transacoes-lista">
+                {% if transacoes %}
+                    {% for data, grupo in transacoes|groupby('data') %}
+                        <div class="transacao-grupo">
+                            <div class="data-grupo">{{ data }}</div>
+                            {% for transacao in grupo %}
+                                <div class="transacao-item">
+                                    <div class="transacao-icon">
+                                        {% if transacao.categoria == 'Alimentação' %}
+                                            <i class="fi fi-rr-shopping-cart"></i>
+                                        {% elif transacao.categoria == 'Transporte' %}
+                                            <i class="fi fi-rr-gas-pump"></i>
+                                        {% elif transacao.categoria == 'Contas' %}
+                                            <i class="fi fi-rr-receipt"></i>
+                                        {% elif transacao.categoria == 'Moradia' %}
+                                            <i class="fi fi-rr-house-building"></i>
+                                        {% elif transacao.categoria == 'Saúde' %}
+                                            <i class="fi fi-rr-doctor"></i>
+                                        {% elif transacao.categoria == 'Educação' %}
+                                            <i class="fi-rr-book-open-cover"></i>
+                                        {% elif transacao.categoria == 'Lazer' %}
+                                            <i class="fi-rr-smile"></i>
+                                        {% elif transacao.categoria == 'Vestuário' %}
+                                            <i class="fi fi-rr-tie"></i>
+                                        {% elif transacao.categoria == 'Outros' %}
+                                            <i class="fi fi-rr-play-alt"></i>
+
+                                            <!-- Categoria de ganhso-->
+
+                                        <!-- Categoria de ganhos -->
+                                        {% elif transacao.categoria == 'Salário' %}
+                                            '<i class="fi fi-rr-dollar"></i>
+                                        {% elif transacao.categoria == 'Freelance' %}
+                                            <i class="fi fi-rr-briefcase"></i>
+                                        {% elif transacao.categoria == 'Vendas' %}
+                                            <i class="fi fi-rr-chart-line-up"></i>
+                                        {% elif transacao.categoria == 'Aluguel' %}
+                                            <i class="fi fi-rr-key"></i>
+                                        {% elif transacao.categoria == 'Presente' %}
+                                            <i class="fi fi-rr-gift"></i>
+                                        {% elif transacao.categoria == 'Investimentos' %}
+                                            <i class="fi fi-rr-money"></i>
+
+                                        {% else %}
+                                            <i class="fi fi-rr-document"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div class="transacao-info">
+                                        <div class="transacao-descricao">{{ transacao.descricao }}</div>
+                                        <div class="transacao-categoria">{{ transacao.categoria }}</div>
+                                    </div>
+                                    <div class="transacao-pagamento">{{ transacao.forma_pagamento }}</div>
+                                    <div class="transacao-valor {{ 'valor-entrada' if transacao.tipo_transacao == 'entrada' else 'valor-saida' }}">
+                                        R$ {{ "%.2f"|format(transacao.valor) }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="sem-transacoes">
+                        <i class="fi fi-rr-info"></i>
+                        <p>Nenhuma transação encontrada</p>
+                    </div>
+                {% endif %}
+            </div>
         </div>
-    </div>
 
-    <script>
-        // Filtro de transações
-        const filtros = document.querySelectorAll('.filtro-item');
-        const transacoes = document.querySelectorAll('.transacao-item');
+        <script>
+            // Filtro de transações
+            const filtros = document.querySelectorAll('.filtro-item');
+            const transacoes = document.querySelectorAll('.transacao-item');
 
-        filtros.forEach(filtro => {
-            filtro.addEventListener('click', () => {
-                // Remove active class from all filters
-                filtros.forEach(f => f.classList.remove('active'));
-                // Add active class to clicked filter
-                filtro.classList.add('active');
+            filtros.forEach(filtro => {
+                filtro.addEventListener('click', () => {
+                    // Remove active class from all filters
+                    filtros.forEach(f => f.classList.remove('active'));
+                    // Add active class to clicked filter
+                    filtro.classList.add('active');
 
-                const filtroTexto = filtro.textContent.toLowerCase();
-                
-                transacoes.forEach(transacao => {
-                    if (filtroTexto === 'todos') {
-                        transacao.style.display = 'grid';
-                    } else if (filtroTexto === 'entradas') {
-                        transacao.style.display = 
-                            transacao.querySelector('.valor-entrada') ? 'grid' : 'none';
-                    } else if (filtroTexto === 'saídas') {
-                        transacao.style.display = 
-                            transacao.querySelector('.valor-saida') ? 'grid' : 'none';
-                    }
+                    const filtroTexto = filtro.textContent.toLowerCase();
+                    
+                    transacoes.forEach(transacao => {
+                        if (filtroTexto === 'todos') {
+                            transacao.style.display = 'grid';
+                        } else if (filtroTexto === 'entradas') {
+                            transacao.style.display = 
+                                transacao.querySelector('.valor-entrada') ? 'grid' : 'none';
+                        } else if (filtroTexto === 'saídas') {
+                            transacao.style.display = 
+                                transacao.querySelector('.valor-saida') ? 'grid' : 'none';
+                        }
+                    });
                 });
             });
-        });
-    </script>
-{% endblock %}
+        </script>
+    {% endblock %}

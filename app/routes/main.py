@@ -6,10 +6,54 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    usuarios = Usuario.listar_usuarios()
-    objetivos = Objetivo.query.filter_by(id_usuario=session['user_id']).all()
-    transacoes = Transacao.query.filter_by(id_usuario=session['user_id']) .order_by(Transacao.data.desc()) .limit(2) .all()
-    return render_template('/main/index.html', usuarios=usuarios, objetivos=objetivos, transacoes=transacoes)
+    # Busca as últimas transações do usuário
+    transacoes = Transacao.query.filter_by(id_usuario=session['user_id']).order_by(Transacao.id.desc()).limit(5).all()
+    
+    # Calcula o total de ganhos
+    total_ganhos = db.session.query(func.sum(Transacao.valor)).\
+        filter_by(id_usuario=session['user_id'], tipo_transacao='ganho').\
+        scalar() or 0.0
+    
+    # Calcula o total de gastos
+    total_gastos = db.session.query(func.sum(Transacao.valor)).\
+        filter_by(id_usuario=session['user_id'], tipo_transacao='gasto').\
+        scalar() or 0.0
+    
+    # Calcula o saldo atual
+    saldo = total_ganhos - total_gastos
+    
+    # Calcula altura do gráfico (máximo 100px)
+    max_valor = max(total_ganhos, total_gastos, 1)  # evita divisão por zero
+    grafico_ganhos = (total_ganhos / max_valor) * 100
+    grafico_gastos = (total_gastos / max_valor) * 100
+    usuario_atual = Usuario.query.get(session['user_id'])
+
+    transacoes = Transacao.query.filter_by(id_usuario=usuario_atual.id).all()
+
+    total_ganho = sum(t.valor for t in transacoes if t.tipo_transacao == 'ganho')
+    total_gasto = sum(t.valor for t in transacoes if t.tipo_transacao == 'gasto')
+    saldo = total_ganho - total_gasto
+    
+    # Converter transações para dicionário para uso no JavaScript
+    transacoes_dict = [{
+        'valor': float(t.valor),
+        'categoria': t.categoria,
+        'tipo_transacao': t.tipo_transacao
+    } for t in transacoes]
+    
+    # Busca os objetivos do usuário
+    objetivos = Objetivo.query.filter_by(id_usuario=session['user_id']).order_by(Objetivo.data_limite).limit(1).all()
+
+    return render_template('/main/index.html',
+                         transacoes=transacoes,
+                         total_ganhos=f"{total_ganhos:,.2f}",
+                         total_gastos=f"{total_gastos:,.2f}",
+                         total_ganho="{:.2f}".format(total_ganho),
+                         total_gasto="{:.2f}".format(total_gasto),
+                         saldo="{:.2f}".format(saldo),
+                         grafico_ganhos=grafico_ganhos,
+                         grafico_gastos=grafico_gastos,
+                         objetivos=objetivos)
 
 @main.route('/transactions', methods=['POST', 'GET'])
 def transactions():
@@ -135,3 +179,32 @@ def edit_goal(goal_id):
         db.session.commit()
 
     return redirect(url_for('main.goals'))
+
+
+@main.route('/financial-control')
+def controller():
+    usuario_atual = Usuario.query.get(session['user_id'])
+    
+    if not usuario_atual:
+        return redirect(url_for('login'))
+    
+    # Obter todas as transações do usuário
+    transacoes = Transacao.query.filter_by(id_usuario=usuario_atual.id).all()
+    
+    # Calcular totais
+    total_ganho = sum(t.valor for t in transacoes if t.tipo_transacao == 'ganho')
+    total_gasto = sum(t.valor for t in transacoes if t.tipo_transacao == 'gasto')
+    saldo = total_ganho - total_gasto
+    
+    # Converter transações para dicionário para uso no JavaScript
+    transacoes_dict = [{
+        'valor': float(t.valor),
+        'categoria': t.categoria,
+        'tipo_transacao': t.tipo_transacao
+    } for t in transacoes]
+    
+    return render_template('/main/controller.html',
+                         transacoes=transacoes_dict,
+                         total_ganho="{:.2f}".format(total_ganho),
+                         total_gasto="{:.2f}".format(total_gasto),
+                         saldo="{:.2f}".format(saldo))

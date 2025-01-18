@@ -191,7 +191,7 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="categoria">Categoria</label>
-                    <select id="categoriasGanho" name="categoria" >
+                    <select id="categoriasGanho">
                         <option value="">Selecione uma categoria</option>
                         <option value="Salário">Salário</option>
                         <option value="Investimentos">Investimentos</option>
@@ -210,7 +210,7 @@
                         <option value="Educação">Educação</option>
                         <option value="Lazer">Lazer</option>
                         <option value="Vestuário">Vestuário</option>
-                        <option value="Assinaturas">Assinaturas</option>
+                        <option value="Contas">Contas</option>
                         <option value="Outros">Outros</option>
                     </select>
                 </div>
@@ -245,22 +245,28 @@
     const categoriasGasto = document.getElementById('categoriasGasto');
     
     function updateFormStyle(transactionType) {
-        // Remove previous classes
-        submitBtn.classList.remove('income', 'expense');
-        
-        // Update submit button style and text
-        if (transactionType === 'ganho') {
-            submitBtn.classList.add('income');
-            categoriasGanho.style.display = 'block';
-            categoriasGasto.style.display = 'none';
-            submitBtn.innerHTML = '<i class="fi fi-rr-plus"></i><span>Adicionar Ganho</span>';
-        } else {
-            submitBtn.classList.add('expense');
-            categoriasGanho.style.display = 'none';
-            categoriasGasto.style.display = 'block';
-            submitBtn.innerHTML = '<i class="fi fi-rr-minus"></i><span>Adicionar Gasto</span>';
-        }
+    // Remove previous classes
+    submitBtn.classList.remove('income', 'expense');
+    
+    // Update submit button style and text
+    if (transactionType === 'ganho') {
+        submitBtn.classList.add('income');
+        categoriasGanho.style.display = 'block';
+        categoriasGasto.style.display = 'none';
+        // Adiciona/remove o atributo name
+        categoriasGanho.setAttribute('name', 'categoria');
+        categoriasGasto.removeAttribute('name');
+        submitBtn.innerHTML = '<i class="fi fi-rr-plus"></i><span>Adicionar Ganho</span>';
+    } else {
+        submitBtn.classList.add('expense');
+        categoriasGanho.style.display = 'none';
+        categoriasGasto.style.display = 'block';
+        // Adiciona/remove o atributo name
+        categoriasGasto.setAttribute('name', 'categoria');
+        categoriasGanho.removeAttribute('name');
+        submitBtn.innerHTML = '<i class="fi fi-rr-minus"></i><span>Adicionar Gasto</span>';
     }
+}
 
     // Adiciona selected apenas se clicado
 radioOptions.forEach(option => {
@@ -275,12 +281,17 @@ radioOptions.forEach(option => {
 
     // Set today's date as default
     document.addEventListener('DOMContentLoaded', () => {
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('data').value = today;
-        
-        // Show gastos categories by default
-        categoriasGasto.style.display = 'block';
-        submitBtn.classList.add('expense');
-    });
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('data').value = today;
+    
+    // Show gastos categories by default
+    categoriasGasto.style.display = 'block';
+    categoriasGanho.style.display = 'none';
+    submitBtn.classList.add('expense');
+    
+    // Garante que apenas o select visível tenha o atributo name
+    categoriasGasto.setAttribute('name', 'categoria');
+    categoriasGanho.removeAttribute('name');
+});
 </script>
 {% endblock %}

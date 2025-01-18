@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="financial-dashboard">
+    <div class="chart-card">
+        <h2 class="chart-title">Despesas por Categoria</h2>
+        <canvas id="expensesChart"></canvas>
+    </div>
+
+    <div class="chart-card">
+        <h2 class="chart-title">Receitas por Categoria</h2>
+        <canvas id="incomeChart"></canvas>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">R$ {{ total_gasto|default('0.00') }}</div>
+            <div class="stat-label">Total de Despesas</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">R$ {{ total_ganho|default('0.00') }}</div>
+            <div class="stat-label">Total de Receitas</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">R$ {{ saldo|default('0.00') }}</div>
+            <div class="stat-label">Saldo</div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .financial-dashboard {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        padding: 1rem;
+        width: 100%;
+    }
+
+    .chart-card {
+        background: white;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .chart-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .stat-card {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        text-align: center;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #029D60;
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+        color: #666;
+        margin-top: 0.25rem;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Função para calcular totais por categoria
+    function calcularTotaisPorCategoria(transacoes, tipo) {
+        const totais = {};
+        transacoes.forEach(transacao => {
+            if (transacao.tipo_transacao === tipo) {
+                totais[transacao.categoria] = (totais[transacao.categoria] || 0) + transacao.valor;
+            }
+        });
+        return totais;
+    }
+
+    // Obter dados das transações via template
+    const transacoes = {{ transacoes|tojson|safe }};
+    
+    // Calcular totais
+    const gastosPorCategoria = calcularTotaisPorCategoria(transacoes, 'gasto');
+    const ganhosPorCategoria = calcularTotaisPorCategoria(transacoes, 'ganho');
+
+    // Configurar dados para os gráficos
+    const expenseData = {
+        labels: ['Alimentação', 'Transporte', 'Moradia', 'Saúde', 'Educação', 'Lazer', 'Vestuário', 'Contas'],
+        datasets: [{
+            data: [
+                gastosPorCategoria['Alimentação'] || 0,
+                gastosPorCategoria['Transporte'] || 0,
+                gastosPorCategoria['Moradia'] || 0,
+                gastosPorCategoria['Saúde'] || 0,
+                gastosPorCategoria['Educação'] || 0,
+                gastosPorCategoria['Lazer'] || 0,
+                gastosPorCategoria['Vestuário'] || 0,
+                gastosPorCategoria['Contas'] || 0
+            ],
+            backgroundColor: [
+                '#FF6B6B',
+                '#4ECDC4',
+                '#45B7D1',
+                '#96CEB4',
+                '#FFEEAD',
+                '#D4A5A5',
+                '#9B4DCA',
+                '#FF9F1C'
+            ],
+            borderWidth: 0
+        }]
+    };
+
+    const incomeData = {
+        labels: ['Salário', 'Freelance', 'Vendas', 'Aluguel', 'Presente', 'Investimentos', 'Outros'],
+        datasets: [{
+            data: [
+                ganhosPorCategoria['Salário'] || 0,
+                ganhosPorCategoria['Freelance'] || 0,
+                ganhosPorCategoria['Vendas'] || 0,
+                ganhosPorCategoria['Aluguel'] || 0,
+                ganhosPorCategoria['Presente'] || 0,
+                ganhosPorCategoria['Investimentos'] || 0,
+                ganhosPorCategoria['Outros'] || 0
+            ],
+            backgroundColor: [
+                '#4CAF50',
+                '#2196F3',
+                '#9C27B0',
+                '#FF9800',
+                '#00BCD4',
+                '#3F51B5',
+                '#607D8B'
+            ],
+            borderWidth: 0
+        }]
+    };
+
+    const chartOptions = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    padding: 20
+                }
+            }
+        },
+        cutout: '60%'
+    };
+
+    // Criar os gráficos
+    new Chart(document.getElementById('expensesChart'), {
+        type: 'doughnut',
+        data: expenseData,
+        options: chartOptions
+    });
+
+    new Chart(document.getElementById('incomeChart'), {
+        type: 'doughnut',
+        data: incomeData,
+        options: chartOptions
+    });
+});
+</script>
+{% endblock %}

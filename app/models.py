@@ -11,6 +11,18 @@ class Usuario(db.Model):
     nome = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
     senha = db.Column(db.String(100), nullable=False)
+    saldo = db.Column(db.Float, default=0.0)
+    total_ganho = db.Column(db.Float, default=0.0)
+    total_gasto = db.Column(db.Float, default=0.0)
+
+    def atualizar_saldo(self):
+        """Recalcula o saldo total do usuário com base nas transações existentes."""
+        ganhos = sum(transacao.valor for transacao in self.transacoes if transacao.tipo_transacao == 'ganho')
+        gastos = sum(transacao.valor for transacao in self.transacoes if transacao.tipo_transacao == 'gasto')
+        self.total_ganho = ganhos
+        self.total_gasto = gastos
+        self.saldo = ganhos - gastos
+        db.session.commit()
 
     @classmethod
     def create_user(cls, nome, email, senha):
@@ -20,7 +32,6 @@ class Usuario(db.Model):
         db.session.commit()
         return novo_usuario
 
-    
     @classmethod
     def listar_usuarios(cls):
         return cls.query.all()
@@ -30,6 +41,7 @@ class Usuario(db.Model):
 
     def check_senha(self, senha):
         return check_password_hash(self.senha, senha)
+
 
 class Transacao(db.Model):
     __tablename__ = 'transacoes'
@@ -56,12 +68,16 @@ class Transacao(db.Model):
         )
         db.session.add(nova_transacao)
         db.session.commit()
+
+        # Atualizar o saldo, total_ganho e total_gasto do usuário
+        usuario = Usuario.query.get(id_usuario)
+        if usuario:
+            usuario.atualizar_saldo()
         return nova_transacao
 
     @classmethod
     def listar_transacao(cls):
         return cls.query.all()
-
 
 class Objetivo(db.Model):
     __tablename__ = 'objetivos'
