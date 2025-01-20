@@ -1,20 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="edit-account-container" style="width: 100%; max-width: 600px; margin: 0 auto; padding: 2rem;">
-    <div style="background-color: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-        <h1 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 2rem; display: flex; align-items: center;">
-            <i class="fi-rr-user" style="margin-right: 0.5rem;"></i>
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/config/edit_user.css') }}">
+
+<div class="edit-account-container">
+    <div class="edit-account-box">
+        <h1 class="edit-account-title">
+            <i class="fi-rr-user"></i>
             Editar Conta
         </h1>
 
         <!-- Exibição de mensagens -->
         {% with messages = get_flashed_messages(with_categories=True) %}
             {% if messages %}
-                <div style="margin-bottom: 1rem;">
+                <div class="messages-container">
                     {% for category, message in messages %}
-                        <div style="padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 0.5rem; color: white; 
-                                    background-color: {% if category == 'success' %} #029D60 {% else %}#E53E3E{% endif %};">
+                        <div class="message {{ category }}">
                             {{ message }}
                         </div>
                     {% endfor %}
@@ -24,71 +25,63 @@
 
         <form method="POST" action="{{ url_for('settings.edit_user') }}">
             <!-- Nome -->
-            <div style="margin-bottom: 1.5rem;">
-                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">
-                    <i class="fi-rr-user" style="margin-right: 0.5rem;"></i>
+            <div class="form-group">
+                <label>
+                    <i class="fi-rr-user"></i>
                     Nome
                 </label>
                 <input 
                     type="text" 
                     name="nome" 
                     value="{{ usuario.nome }}"
-                    style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 0.5rem; outline: none;"
                 >
             </div>
 
             <!-- Email -->
-            <div style="margin-bottom: 1.5rem;">
-                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">
-                    <i class="fi-rr-envelope" style="margin-right: 0.5rem;"></i>
+            <div class="form-group">
+                <label>
+                    <i class="fi-rr-envelope"></i>
                     Email
                 </label>
                 <input 
                     type="email" 
                     name="email" 
                     value="{{ usuario.email }}"
-                    style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 0.5rem; outline: none;"
                 >
             </div>
 
             <!-- Senha Atual -->
-            <div style="margin-bottom: 1.5rem;">
-                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">
-                    <i class="fi-rr-lock" style="margin-right: 0.5rem;"></i>
+            <div class="form-group">
+                <label>
+                    <i class="fi-rr-lock"></i>
                     Senha Atual
                 </label>
                 <input 
                     type="password" 
                     name="senha_atual"
-                    style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 0.5rem; outline: none;"
                 >
             </div>
 
             <!-- Nova Senha -->
-            <div style="margin-bottom: 1.5rem;">
-                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">
-                    <i class="fi-rr-key" style="margin-right: 0.5rem;"></i>
+            <div class="form-group">
+                <label>
+                    <i class="fi-rr-key"></i>
                     Nova Senha
                 </label>
                 <input 
                     type="password" 
                     name="nova_senha"
-                    style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 0.5rem; outline: none;"
                 >
             </div>
 
             <!-- Botões -->
-            <div style="display: flex; gap: 1rem;">
-                <button 
-                    type="submit" 
-                    style="background-color: #029D60; color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; cursor: pointer; display: flex; align-items: center; font-weight: 500;">
-                    <i class="fi-rr-check" style="margin-right: 0.5rem;"></i>
+            <div class="button-group">
+                <button type="submit" class="save-button">
+                    <i class="fi-rr-check"></i>
                     Salvar Alterações
                 </button>
-                <a 
-                    href="/settings" 
-                    style="background-color: #e2e8f0; color: #4a5568; padding: 0.75rem 1.5rem; border-radius: 0.5rem; text-decoration: none; display: flex; align-items: center; font-weight: 500;">
-                    <i class="fi-rr-cross" style="margin-right: 0.5rem;"></i>
+                <a href="/settings" class="cancel-button">
+                    <i class="fi-rr-cross"></i>
                     Cancelar
                 </a>
             </div>

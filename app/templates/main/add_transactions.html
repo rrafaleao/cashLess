@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Adicionar Transação{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/main/add_transactions.css') }}">
+
+
+<div class="transaction-container">
+    <div class="transaction-card">
+        <div class="card-header">
+            <h2 class="card-title">Adicionar Transação</h2>
+        </div>
+
+        <form class="transaction-form" method="POST" action="{{ url_for('main.transactions') }}">
+            <div class="radio-group">
+                <label class="radio-option income">
+                    <input type="radio" name="tipo_transacao" value="ganho" required>
+                    <i class="fi fi-rr-plus-small"></i>
+                    <span>Ganho</span>
+                </label>
+                <label class="radio-option expense">
+                    <input type="radio" name="tipo_transacao" value="gasto" required>
+                    <i class="fi fi-rr-minus-small"></i>
+                    <span>Gasto</span>
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label for="descricao">Descrição</label>
+                <input type="text" id="descricao" name="descricao" required placeholder="Ex: Compras no mercado">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="valor">Valor (R$)</label>
+                    <input type="number" id="valor" name="valor" step="0.01" required placeholder="0,00">
+                </div>
+
+                <div class="form-group">
+                    <label for="data">Data</label>
+                    <input type="date" id="data" name="data" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="categoria">Categoria</label>
+                    <select id="categoriasGanho">
+                        <option value="">Selecione uma categoria</option>
+                        <option value="Salário">Salário</option>
+                        <option value="Investimentos">Investimentos</option>
+                        <option value="Freelance">Freelance</option>
+                        <option value="Vendas">Vendas</option>
+                        <option value="Aluguel">Aluguel</option>
+                        <option value="Presente">Presente</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                    <select id="categoriasGasto" name="categoria">
+                        <option value="">Selecione uma categoria</option>
+                        <option value="Alimentação">Alimentação</option>
+                        <option value="Transporte">Transporte</option>
+                        <option value="Moradia">Moradia</option>
+                        <option value="Saúde">Saúde</option>
+                        <option value="Educação">Educação</option>
+                        <option value="Lazer">Lazer</option>
+                        <option value="Vestuário">Vestuário</option>
+                        <option value="Contas">Contas</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="forma_pagamento">Forma de Pagamento</label>
+                    <select id="forma_pagamento" name="forma_pagamento" required>
+                        <option value="">Selecione a forma de pagamento</option>
+                        <option value="Dinheiro">Dinheiro</option>
+                        <option value="Cartão de Débito">Cartão de Débito</option>
+                        <option value="Cartão de Crédito">Cartão de Crédito</option>
+                        <option value="Pix">Pix</option>
+                        <option value="Transferência">Transferência</option>
+                        <option value="Outro">Outro</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                <i class="fi fi-rr-plus"></i>
+                <span>Adicionar Transação</span>
+            </button>
+        </form>
+    </div>
+</div>
+
+
+<script src="{{ url_for('static', filename='script/main/add_transactions.js') }}"></script>
+
+{% endblock %}

@@ -1,0 +1,149 @@
+.extrato-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.extrato-header {
+    background-color: #ffffff;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.filtros {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.filtro-item {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.filtro-item:hover, .filtro-item.active {
+    background-color: #029D60;
+    color: white;
+    border-color: #029D60;
+}
+
+.transacoes-lista {
+    background-color: #ffffff;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.transacao-grupo {
+    margin-bottom: 30px;
+}
+
+.data-grupo {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.transacao-item {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto auto;
+    align-items: center;
+    gap: 20px;
+    padding: 15px;
+    border-radius: 10px;
+    transition: background-color 0.3s;
+    margin-bottom: 10px;
+}
+
+.transacao-item:hover {
+    background-color: #f8f9fa;
+}
+
+.transacao-icon {
+    width: 40px;
+    height: 40px;
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #029D60;
+}
+
+.transacao-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.transacao-descricao {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.transacao-categoria {
+    color: #666;
+    font-size: 14px;
+}
+
+.transacao-pagamento {
+    color: #666;
+    font-size: 14px;
+}
+
+.transacao-valor {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.valor-entrada {
+    color: #029D60;
+}
+
+.valor-saida {
+    color: #dc3545;
+}
+
+.sem-transacoes {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+}
+
+.resumo-card {
+    background-color: #029D60;
+    color: white;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.resumo-valores {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.resumo-item {
+    text-align: center;
+}
+
+.resumo-label {
+    font-size: 14px;
+    margin-bottom: 5px;
+    opacity: 0.9;
+}
+
+.resumo-valor {
+    font-size: 20px;
+    font-weight: 600;
+}
