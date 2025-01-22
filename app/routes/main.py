@@ -32,7 +32,6 @@ def index():
 def transactions():
     if request.method == 'POST':
         if 'user_id' not in session:
-            flash('Você precisa estar logado para adicionar uma transação.', 'error')
             return redirect(url_for('auth.login'))
 
         id_usuario = session['user_id']
@@ -60,7 +59,6 @@ def transactions():
                     tipo_transacao=tipo_transacao,
                     num_parcelas=num_parcelas
                 )
-                flash('Transação parcelada criada com sucesso!', 'success')
                 return redirect(url_for('main.transactions'))
         
         # Se não for parcelado ou se houver algum erro, criar transação normal
@@ -73,7 +71,6 @@ def transactions():
             id_usuario=id_usuario,
             tipo_transacao=tipo_transacao
         )
-        flash('Transação criada com sucesso!', 'success')
         return redirect(url_for('main.transactions'))
         
     return render_template('/main/add_transactions.html')
@@ -87,8 +84,9 @@ def extract():
     ).all()
 
     # Calcula totais
-    total_entradas = sum(t.valor for t in transacoes if t.tipo_transacao == 'entrada')
-    total_saidas = sum(t.valor for t in transacoes if t.tipo_transacao == 'saida')
+    # Na rota.py
+    total_entradas = sum(t.valor for t in transacoes if t.tipo_transacao == 'ganho')
+    total_saidas = sum(t.valor for t in transacoes if t.tipo_transacao == 'gasto')
     saldo = total_entradas - total_saidas
 
     # Formata os valores para exibição
@@ -125,7 +123,6 @@ def create():
         # Verifica se tem saldo suficiente para o valor inicial
         if valor_inicial > 0:
             if usuario.saldo < valor_inicial:
-                flash('Saldo insuficiente para o valor inicial! Seu saldo atual é R$ {:.2f}'.format(usuario.saldo), 'error')
                 return redirect(url_for('main.goals'))
             
             # Cria uma transação para o valor inicial
@@ -155,12 +152,10 @@ def create():
             usuario.atualizar_saldo()
             
         db.session.commit()
-        flash('Objetivo criado com sucesso!', 'success')
         return redirect(url_for('main.goals'))
         
     except Exception as e:
         db.session.rollback()
-        flash('Erro ao criar objetivo. Por favor, tente novamente.', 'error')
         return redirect(url_for('main.goals'))
 
 @main.route('/goals/<int:id>/add', methods=['POST'])
@@ -170,7 +165,6 @@ def add_value(id):
         
         # Verifica se o objetivo pertence ao usuário atual
         if objetivo.id_usuario != session['user_id']:
-            flash('Operação não permitida.', 'error')
             return redirect(url_for('main.goals'))
             
         valor_adicional = float(request.form.get('valor'))
@@ -180,7 +174,6 @@ def add_value(id):
         
         # Verifica se o usuário tem saldo suficiente
         if usuario.saldo < valor_adicional:
-            flash('Saldo insuficiente! Seu saldo atual é R$ {:.2f}'.format(usuario.saldo), 'error')
             return redirect(url_for('main.goals'))
         
         # Adiciona o valor ao objetivo
@@ -204,12 +197,11 @@ def add_value(id):
         usuario.atualizar_saldo()
         
         db.session.commit()
-        flash('Valor adicionado com sucesso!', 'success')
         return redirect(url_for('main.goals'))
         
     except Exception as e:
         db.session.rollback()
-        flash('Erro ao adicionar valor. Por favor, tente novamente.', 'error')
+
         return redirect(url_for('main.goals'))
     
 

@@ -147,3 +147,10 @@
     font-size: 20px;
     font-weight: 600;
 }
+.valor-entrada {
+    color: #0066cc; /* Azul para ganhos */
+}
+
+.valor-saida {
+    color: #cc0000; /* Vermelho para gastos */
+}

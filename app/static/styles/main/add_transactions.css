@@ -143,3 +143,41 @@
 #categoriasGanho, #categoriasGasto {
     display: none;
 }
+
+/* Manter todo o CSS anterior e adicionar: */
+
+#parcelamento-container {
+    transition: all 0.3s ease;
+    opacity: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+}
+
+#parcelamento-container.visible {
+    opacity: 1;
+    height: auto;
+    margin: 20px 0;
+    padding: inherit;
+}
+
+#valor_parcela {
+    background-color: #f5f5f5;
+    color: #666;
+    cursor: not-allowed;
+}
+
+/* Ajuste para o select de parcelas */
+#numero_parcelas {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+    width: 100%;
+}
+
+#numero_parcelas:focus {
+    border-color: #029D60;
+    outline: none;
+}
