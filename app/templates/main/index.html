@@ -5,6 +5,7 @@
 {% block content %}
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/main/index.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <div class="dashboard-container">
         <div class="cards-wrapper">
@@ -30,10 +31,10 @@
                 </div>
             </div>
 
-            <!-- Card de Resultado -->
+            <!-- Card de Resultado com Gráficos -->
             <div class="result-card">
                 <div class="result-header">
-                    <h2 class="result-title">Resultado</h2>
+                    <h2 class="result-title">Resultados:</h2>
                     <div class="toggle-buttons">
                         <button class="toggle-btn active" data-chart="expenses">Despesas</button>
                         <button class="toggle-btn" data-chart="income">Receitas</button>
@@ -127,5 +128,98 @@
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='script/main/index.js') }}"></script>
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+    function calcularTotaisPorCategoria(transacoes, tipo) {
+        const totais = {};
+        transacoes.forEach(transacao => {
+            if (transacao.tipo_transacao === tipo) {
+                totais[transacao.categoria] = (totais[transacao.categoria] || 0) + transacao.valor;
+            }
+        });
+        return totais;
+    }
+
+    const transacoes = {{ todas_transacoes|tojson|safe }};
+    const gastosPorCategoria = calcularTotaisPorCategoria(transacoes, 'gasto');
+    const ganhosPorCategoria = calcularTotaisPorCategoria(transacoes, 'ganho');
+
+    const expenseCategories = [
+        'Alimentação', 'Transporte', 'Moradia', 'Saúde', 
+        'Educação', 'Lazer', 'Vestuário', 'Contas'
+    ];
+
+    const incomeCategories = [
+        'Salário', 'Freelance', 'Vendas', 'Aluguel', 
+        'Presente', 'Investimentos', 'Outros', ''
+    ];
+
+    const expenseData = {
+        labels: expenseCategories,
+        datasets: [{
+            data: expenseCategories.map(cat => gastosPorCategoria[cat] || 0),
+            backgroundColor: [
+                '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', 
+                '#FFEEAD', '#D4A5A5', '#9B4DCA', '#FF9F1C'
+            ],
+            borderWidth: 0
+        }]
+    };
+
+    const incomeData = {
+        labels: incomeCategories,
+        datasets: [{
+            data: incomeCategories.map(cat => cat ? (ganhosPorCategoria[cat] || 0) : 0),
+            backgroundColor: [
+                '#4CAF50', '#2196F3', '#9C27B0', '#FF9800', 
+                '#00BCD4', '#3F51B5', '#607D8B', 'transparent'
+            ],
+            borderWidth: 0
+        }]
+    };
+
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: {
+            padding: {
+                top: 10,
+                bottom: 10
+            }
+        },
+        plugins: {
+            legend: {
+                display: true,
+                position: 'right',
+                labels: {
+                    padding: 8,
+                    usePointStyle: true,
+                    pointStyle: 'circle',
+                    font: {
+                        size: 10
+                    }
+                }
+            }
+        },
+        cutout: '65%'
+    };
+
+    const miniChart = new Chart(document.getElementById('miniChart'), {
+        type: 'doughnut',
+        data: expenseData,
+        options: chartOptions
+    });
+
+    const toggleButtons = document.querySelectorAll('.toggle-btn');
+    toggleButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            toggleButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            miniChart.data = button.dataset.chart === 'expenses' ? expenseData : incomeData;
+            miniChart.update();
+        });
+    });
+});
+    </script>
 {% endblock %}

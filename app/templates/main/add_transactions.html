@@ -1,98 +1,169 @@
 {% extends "base.html" %}
 
-{% block title %}Adicionar Transação{% endblock %}
+{% block title %}Registrar Transação{% endblock %}
 
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/main/add_transactions.css') }}">
-
-
-<div class="transaction-container">
+<div class="page-container">
+    <!-- Card Principal -->
     <div class="transaction-card">
-        <div class="card-header">
-            <h2 class="card-title">Adicionar Transação</h2>
+        <h2 class="card-title">Registrar Transação</h2>
+        
+        <!-- Toggle Switch de Tipo -->
+        <div class="type-toggle">
+            <button class="toggle-btn active" data-type="ganho">
+                <span>Ganho</span>
+            </button>
+            <button class="toggle-btn" data-type="gasto">
+                <span>Gasto</span>
+            </button>
         </div>
 
-        <form class="transaction-form" method="POST" action="{{ url_for('main.transactions') }}">
-            <div class="radio-group">
-                <label class="radio-option income">
-                    <input type="radio" name="tipo_transacao" value="ganho" required>
-                    <i class="fi fi-rr-plus-small"></i>
-                    <span>Ganho</span>
-                </label>
-                <label class="radio-option expense">
-                    <input type="radio" name="tipo_transacao" value="gasto" required>
-                    <i class="fi fi-rr-minus-small"></i>
-                    <span>Gasto</span>
-                </label>
-            </div>
-
-            <div class="form-group">
-                <label for="descricao">Descrição</label>
-                <input type="text" id="descricao" name="descricao" required placeholder="Ex: Compras no mercado">
-            </div>
-
-            <div class="form-row">
+        <!-- Formulário -->
+        <form method="POST" action="{{ url_for('main.transactions') }}" class="transaction-form">
+            <input type="hidden" name="tipo_transacao" id="tipoTransacao" value="ganho">
+            
+            <!-- Grid de 2 colunas para campos principais -->
+            <div class="form-grid">
                 <div class="form-group">
-                    <label for="valor">Valor (R$)</label>
-                    <input type="number" id="valor" name="valor" step="0.01" required placeholder="0,00">
+                    <label>
+                        <i class="fi fi-rr-text"></i>
+                        Descrição
+                    </label>
+                    <input type="text" name="descricao" required placeholder="Ex: Salário mensal">
                 </div>
 
                 <div class="form-group">
-                    <label for="data">Data</label>
-                    <input type="date" id="data" name="data" required>
+                    <label>
+                        <i class="fi fi-rr-money"></i>
+                        Valor (R$)
+                    </label>
+                    <input type="number" name="valor" step="0.01" required placeholder="0,00">
                 </div>
             </div>
 
-            <div class="form-row">
+            <div class="form-grid">
                 <div class="form-group">
-                    <label for="categoria">Categoria</label>
-                    <select id="categoriasGanho">
-                        <option value="">Selecione uma categoria</option>
-                        <option value="Salário">Salário</option>
-                        <option value="Investimentos">Investimentos</option>
-                        <option value="Freelance">Freelance</option>
-                        <option value="Vendas">Vendas</option>
-                        <option value="Aluguel">Aluguel</option>
-                        <option value="Presente">Presente</option>
-                        <option value="Outros">Outros</option>
-                    </select>
-                    <select id="categoriasGasto" name="categoria">
-                        <option value="">Selecione uma categoria</option>
-                        <option value="Alimentação">Alimentação</option>
-                        <option value="Transporte">Transporte</option>
-                        <option value="Moradia">Moradia</option>
-                        <option value="Saúde">Saúde</option>
-                        <option value="Educação">Educação</option>
-                        <option value="Lazer">Lazer</option>
-                        <option value="Vestuário">Vestuário</option>
-                        <option value="Contas">Contas</option>
-                        <option value="Outros">Outros</option>
-                    </select>
+                    <label>
+                        <i class="fi fi-rr-apps"></i>
+                        Categoria
+                    </label>
+                    <div class="custom-select">
+                        <select name="categoria" id="categoria" required>
+                            <!-- Preenchido via JavaScript -->
+                        </select>
+                        <i class="fi fi-rr-angle-down"></i>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="forma_pagamento">Forma de Pagamento</label>
-                    <select id="forma_pagamento" name="forma_pagamento" required>
-                        <option value="">Selecione a forma de pagamento</option>
-                        <option value="Dinheiro">Dinheiro</option>
-                        <option value="Cartão de Débito">Cartão de Débito</option>
-                        <option value="Cartão de Crédito">Cartão de Crédito</option>
-                        <option value="Pix">Pix</option>
-                        <option value="Transferência">Transferência</option>
-                        <option value="Outro">Outro</option>
-                    </select>
+                    <label>
+                        <i class="fi fi-rr-credit-card"></i>
+                        Forma de Pagamento
+                    </label>
+                    <div class="custom-select">
+                        <select name="forma_pagamento" id="formaPagamento" required>
+                            <option value="dinheiro">Dinheiro</option>
+                            <option value="pix">PIX</option>
+                            <option value="debito">Cartão de Débito</option>
+                            <option value="credito">Cartão de Crédito</option>
+                        </select>
+                        <i class="fi fi-rr-angle-down"></i>
+                    </div>
                 </div>
             </div>
 
+            <!-- Campos adicionais -->
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>
+                        <i class="fi fi-rr-calendar"></i>
+                        Data
+                    </label>
+                    <input type="date" name="data" required>
+                </div>
+            </div>
             <button type="submit" class="submit-btn">
-                <i class="fi fi-rr-plus"></i>
-                <span>Adicionar Transação</span>
+                <i class="fi fi-rr-check"></i>
+                Registrar Transação
             </button>
         </form>
     </div>
-</div>
 
+<style></style>
 
-<script src="{{ url_for('static', filename='script/main/add_transactions.js') }}"></script>
+<script>
+const categorias = {
+    ganho: [
+        { valor: 'Salário', texto: 'Salário', icone: 'fi-rr-money-bill-wave' },
+        { valor: 'Investimentos', texto: 'Investimentos', icone: 'fi-rr-chart-line-up' },
+        { valor: 'Freelance', texto: 'Freelance', icone: 'fi-rr-briefcase' },
+        { valor: 'Vendas', texto: 'Vendas', icone: 'fi-rr-shopping-cart' },
+        { valor: 'Aluguel', texto: 'Aluguel', icone: 'fi-rr-home' },
+        { valor: 'Presente', texto: 'Presente', icone: 'fi-rr-gift' },
+        { valor: 'Outros', texto: 'Outros', icone: 'fi-rr-plus' }
+    ],
+    gasto: [
+        { valor: 'Alimentação', texto: 'Alimentação', icone: 'fi-rr-shopping-cart' },
+        { valor: 'Transporte', texto: 'Transporte', icone: 'fi-rr-car' },
+        { valor: 'Moradia', texto: 'Moradia', icone: 'fi-rr-house' },
+        { valor: 'Saúde', texto: 'Saúde', icone: 'fi-rr-hospital' },
+        { valor: 'Educação', texto: 'Educação', icone: 'fi-rr-book' },
+        { valor: 'Lazer', texto: 'Lazer', icone: 'fi-rr-playing-cards' },
+        { valor: 'Vestuário', texto: 'Vestuário', icone: 'fi-rr-shirt' },
+        { valor: 'Contas', texto: 'Contas', icone: 'fi-rr-bill' },
+        { valor: 'Outros', texto: 'Outros', icone: 'fi-rr-plus' }
+    ]
+};
 
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleBtns = document.querySelectorAll('.toggle-btn');
+    const tipoTransacao = document.getElementById('tipoTransacao');
+    const categoriaSelect = document.getElementById('categoria');
+    const formaPagamentoSelect = document.getElementById('formaPagamento');
+
+    // Atualize as opções de forma de pagamento
+    formaPagamentoSelect.innerHTML = `
+        <option value="debito">Cartão de Débito</option>
+        <option value="pix">PIX</option>
+        <option value="dinheiro">Dinheiro</option>
+        <option value="credito">Cartão de Crédito</option>
+        <option value="transferencia">Transferência</option>
+        <option value="outros">Outros</option>
+    `;
+
+    // Função para atualizar categorias
+    function atualizarCategorias(tipo) {
+        categoriaSelect.innerHTML = '';
+        categorias[tipo].forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat.valor;
+            option.textContent = cat.texto;
+            categoriaSelect.appendChild(option);
+        });
+    }
+
+    // Inicializar com Ganho
+    atualizarCategorias('ganho');
+
+    // Toggle buttons
+    toggleBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            toggleBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const tipo = btn.dataset.type;
+            tipoTransacao.value = tipo;
+            atualizarCategorias(tipo);
+        });
+    });
+
+    // Formatação de valor
+    const valorInput = document.querySelector('input[name="valor"]');
+    valorInput.addEventListener('input', function(e) {
+        let valor = e.target.value.replace(/\D/g, '');
+        valor = (parseFloat(valor) / 100).toFixed(2);
+        e.target.value = valor;
+    });
+});
+</script>
 {% endblock %}

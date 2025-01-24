@@ -26,20 +26,37 @@
 }
 
 .result-card {
+    width: 450px;
+    height: 230px;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
     background-color: #ffffff;
+    overflow: hidden;
+}
+
+.chart-wrapper {
+    flex-grow: 1;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 150px;
+    margin-top: -20px; /* Adicionado para mover o gráfico para cima */
 }
 
 .result-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
-
 .result-title {
     color: #333;
     font-size: 24px;
-    margin: 0;
+    margin-top: -50px;
 }
 
 .toggle-buttons {

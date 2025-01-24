@@ -8,8 +8,31 @@ main = Blueprint('main', __name__)
 def index():
     if 'user_id' not in session:
         return redirect('login')
-    # Busca somente as 2 últimas transações
-    transacoes = Transacao.query.filter_by(id_usuario=session['user_id']).order_by(Transacao.id.desc()).limit(2).all()
+    
+    # Fetch only 2 recent transactions for display
+    transacoes_recentes = Transacao.query.filter_by(id_usuario=session['user_id']).order_by(Transacao.id.desc()).limit(2).all()
+    transacoes_recentes_json = [
+        {
+            'descricao': t.descricao,
+            'valor': float(t.valor),
+            'tipo_transacao': t.tipo_transacao,
+            'categoria': t.categoria,
+            'forma_pagamento': t.forma_pagamento
+        } for t in transacoes_recentes
+    ]
+    
+    # Fetch ALL transactions for the chart
+    todas_transacoes = Transacao.query.filter_by(id_usuario=session['user_id']).order_by(Transacao.id.desc()).all()
+    todas_transacoes_json = [
+        {
+            'descricao': t.descricao,
+            'valor': float(t.valor),
+            'tipo_transacao': t.tipo_transacao,
+            'categoria': t.categoria,
+            'forma_pagamento': t.forma_pagamento
+        } for t in todas_transacoes
+    ]
+    
     total_ganhos = db.session.query(func.sum(Transacao.valor)).filter_by(id_usuario=session['user_id'], tipo_transacao='ganho').scalar() or 0.0
     total_gastos = db.session.query(func.sum(Transacao.valor)).filter_by(id_usuario=session['user_id'], tipo_transacao='gasto').scalar() or 0.0
     saldo = total_ganhos - total_gastos
@@ -17,16 +40,16 @@ def index():
     grafico_ganhos = (total_ganhos / max_valor) * 100
     grafico_gastos = (total_gastos / max_valor) * 100
     objetivos = Objetivo.query.filter_by(id_usuario=session['user_id']).order_by(Objetivo.data_limite).limit(1).all()
-
+    
     return render_template('/main/index.html',
-                           transacoes=transacoes,
+                           transacoes=transacoes_recentes_json,
+                           todas_transacoes=todas_transacoes_json,
                            total_ganhos=f"{total_ganhos:,.2f}",
                            total_gastos=f"{total_gastos:,.2f}",
                            saldo="{:.2f}".format(saldo),
                            grafico_ganhos=grafico_ganhos,
                            grafico_gastos=grafico_gastos,
                            objetivos=objetivos)
-
 
 @main.route('/transactions', methods=['POST', 'GET'])
 def transactions():
@@ -42,26 +65,6 @@ def transactions():
         data = request.form['data']
         tipo_transacao = request.form['tipo_transacao']
         
-        # Verificar se é parcelado
-        has_parcelas = 'has_parcelas' in request.form
-        
-        if has_parcelas and 'num_parcelas' in request.form:
-            num_parcelas = int(request.form['num_parcelas'])
-            if num_parcelas > 1:
-                # Criar transação parcelada
-                Transacao.criar_transacao_parcelada(
-                    descricao=descricao,
-                    valor_total=valor,
-                    categoria=categoria,
-                    forma_pagamento=forma_pagamento,
-                    data_inicial=data,
-                    id_usuario=id_usuario,
-                    tipo_transacao=tipo_transacao,
-                    num_parcelas=num_parcelas
-                )
-                return redirect(url_for('main.transactions'))
-        
-        # Se não for parcelado ou se houver algum erro, criar transação normal
         Transacao.create_transacao(
             descricao=descricao,
             valor=valor,
@@ -69,8 +72,8 @@ def transactions():
             forma_pagamento=forma_pagamento,
             data=data,
             id_usuario=id_usuario,
-            tipo_transacao=tipo_transacao
-        )
+            tipo_transacao=tipo_transacao,
+                )
         return redirect(url_for('main.transactions'))
         
     return render_template('/main/add_transactions.html')
