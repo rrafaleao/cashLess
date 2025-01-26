@@ -13,8 +13,8 @@ Bem-vindo ao **cashLess**, uma aplicação web projetada para ajudar você a ger
 
 Para informações detalhadas sobre o projeto, escolha o idioma de sua preferência:  
 
-- [Leia a Documentação em Português](README_BR.md)  
-- [Read the Documentation in English](README_EN.md)  
+- [Leia a Documentação em Português](/docs/br/README_BR.md)  
+- [Read the Documentation in English](/docs/en/README_EN.md)  
 
 ---
 
